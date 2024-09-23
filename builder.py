@@ -94,6 +94,9 @@ try:
                 elif command_list[1] == "channel-id":
                     settings[3] = command_list[2]
 
+                elif command_list[1] == "webhook":
+                    settings[4] = command_list[2]
+
                 else:
                     print_a("[!] Invalid setting!")
 
