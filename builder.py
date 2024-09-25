@@ -192,13 +192,13 @@ try:
                         subprocess.call(["py", settings[0] + ".py"])
                         exit()
                     else:
-                        if os.path.exists('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python38-32/python.exe'):
-                            path_to_python = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python38-32/python.exe')
+                        if os.path.exists('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python312-32/python.exe'):
+                            path_to_python = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python312-32/python.exe')
                         else:
-                            path_to_python = os.path.expanduser('~/.wine/drive_c/users/root/AppData/Local/Programs/Python/Python38-32/python.exe')
+                            path_to_python = os.path.expanduser('~/.wine/drive_c/users/root/AppData/Local/Programs/Python/Python312-32/python.exe')
                         
                         if "Arch" in distro.name() or "Manjaro" in distro.name():
-                            path_to_python = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python38-32/python.exe')
+                            path_to_python = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python312-32/python.exe')
                         
                         subprocess.call(["wine", path_to_python, settings[0] + ".py"])
                         exit()
@@ -207,13 +207,13 @@ try:
                 if OS == "win32":
                     path_to_pyinstaller = 'pyinstaller'
                 else:
-                    if os.path.exists('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python38-32/Scripts/pyinstaller.exe'):
-                        path_to_pyinstaller = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python38-32/Scripts/pyinstaller.exe')
+                    if os.path.exists('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python312-32/Scripts/pyinstaller.exe'):
+                        path_to_pyinstaller = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python312-32/Scripts/pyinstaller.exe')
                     else:
-                        path_to_pyinstaller = os.path.expanduser('~/.wine/drive_c/users/root/AppData/Local/Programs/Python/Python38-32/Scripts/pyinstaller.exe')
+                        path_to_pyinstaller = os.path.expanduser('~/.wine/drive_c/users/root/AppData/Local/Programs/Python/Python312-32/Scripts/pyinstaller.exe')
                     
                     if "Arch" in distro.name() or "Manjaro" in distro.name():
-                        path_to_pyinstaller = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python38-32/Scripts/pyinstaller.exe')
+                        path_to_pyinstaller = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python312-32/Scripts/pyinstaller.exe')
 
                 compile_command = [path_to_pyinstaller, "--onefile", "--noconsole", "--icon=img/exe_file.ico", settings[0] + ".py"]
                 
