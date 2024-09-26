@@ -1,5 +1,6 @@
 
 import os
+import json
 import distro
 import subprocess
 from sys import platform as OS
@@ -36,9 +37,14 @@ Start by typing `help` \n ''')
 settings = ["None", "None", "None", "None", "None"]
 payload = ""
 
-def print_a(text:str):
+def print_a(text:str) -> None:
     """Print the text with space above and under it, for better view"""
     print(f"\n{text}\n")
+
+def check_config_folder() -> None:
+    folder = os.path.expanduser("./.config")
+    if not os.path.exists(folder):
+        os.makedirs(folder)
 
 def createTable(settings):
     table = PrettyTable(["Setting", "Value"])
@@ -108,6 +114,70 @@ try:
                 print(f"\n{table.get_string(title='Maciassdopia Backdoor Settings')}")
                 print("Run 'help set' for more information\n")
 
+        elif command_list[0] == "save":
+            if payload == "":
+                print_a("[!] Please select a payload!")
+                continue
+
+            print("\n[+] Saving backdoor settings...")
+
+            check_config_folder()
+
+            try:
+                file_path = ".config/saves.json"
+                if os.path.exists(file_path):
+                    with open(file_path, 'r') as file:
+                        data = json.load(file)
+
+                    data[payload][settings[0]] = {
+                        "guild-id" : settings[1],
+                        "bot-token" : settings[2],
+                        "channel-id" : settings[3],
+                        "webhook" : settings[4]
+                    }
+                else:
+                    data = {
+                        payload:{
+                            settings[0]: {
+                                "guild-id" : settings[1],
+                                "bot-token" : settings[2],
+                                "channel-id" : settings[3],
+                                "webhook" : settings[4]
+                            }
+                        }
+                    }
+
+                with open(file_path, "w") as file:
+                    json.dump(data, file, indent=4)
+
+                print_a("[+] Settings have been saved successfully.")
+            except Exception as e:
+                print_a(f"[!] An error occurred while saving the settings.\n{e}")
+            
+        elif command_list[0] == "load":
+            if len(command_list) != 2:
+                print_a("[!] Please specify a backdoor to load!")
+
+            elif payload == "":
+                print_a("[!] Please select a payload first!")
+
+            else:
+                print("\n[+] Loading backdoor settings...")
+                try:
+                    file_path = ".config/saves.json"
+                    if os.path.exists(file_path):
+                        with open(file_path, 'r') as file:
+                            data = json.load(file)
+
+                        settings_loaded = data[payload][command_list[1]].values()
+                        settings = [command_list[1], *settings_loaded]
+
+                        print_a("[+] Settings have been loaded successfully.")
+                    else:
+                        print_a("[!] An error occurred while loading the settings.")
+                except Exception as e:
+                    print_a(f"[!] An error occurred while loading the settings.\n{e}")
+
         elif command_list[0] == "clear" or command_list[0] == "cls":
             clear_screeen()
 
@@ -127,6 +197,10 @@ try:
         "build" Packages the backdoor into an EXE file
 
         "build dev" Running backdoor localy (in cli) for testing purposes
+
+        "save" Saves for later restoration (key is the backdoor name)
+
+        "load <name>" Load saved configuarion with specified backdoor name
                 
         "update" Gets the latest version of Maciassdopia
                 
