@@ -1,5 +1,7 @@
 discord
 discord_webhook
+pyautogui
+opencv-python
 keyboard
 pywin32
 pyinstaller

