@@ -1,3 +1,5 @@
 discord
+discord_webhook
+keyboard
 pywin32
 pyinstaller

