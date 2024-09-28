@@ -2,6 +2,7 @@ discord
 discord_webhook
 pyautogui
 opencv-python
+pillow
 keyboard
 pywin32
 pyinstaller

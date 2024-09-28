@@ -168,6 +168,7 @@ def screenshot():
         Screenshot = pyautogui.screenshot()
         path = os.environ["temp"] + "\\s.png"
         Screenshot.save(path)
+        return path
     except Exception as e:
         return False
 
