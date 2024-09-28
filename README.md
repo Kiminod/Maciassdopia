@@ -56,3 +56,6 @@ If u want to build the project, just type:
 Or for linux:
 
 ```sudo python ./builder.py```
+
+## Disclaimer
+This github repository is made for educational purposes only. The developer is not responsible for any misuse of this software. **Do not use this software for illegal purposes.**

