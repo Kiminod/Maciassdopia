@@ -6,3 +6,4 @@ pillow
 keyboard
 pywin32
 pyinstaller
+pycryptodome

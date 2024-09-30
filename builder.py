@@ -261,21 +261,22 @@ try:
                 f.write(newfile)
                 f.close()
 
-                if command_list[1] == "dev":
-                    if OS == "win32":
-                        subprocess.call(["py", settings[0] + ".py"])
-                        exit()
-                    else:
-                        if os.path.exists('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python312-32/python.exe'):
-                            path_to_python = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python312-32/python.exe')
+                if len(command_list) > 1:
+                    if command_list[1] == "dev":
+                        if OS == "win32":
+                            subprocess.call(["py", settings[0] + ".py"])
+                            exit()
                         else:
-                            path_to_python = os.path.expanduser('~/.wine/drive_c/users/root/AppData/Local/Programs/Python/Python312-32/python.exe')
-                        
-                        if "Arch" in distro.name() or "Manjaro" in distro.name():
-                            path_to_python = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python312-32/python.exe')
-                        
-                        subprocess.call(["wine", path_to_python, settings[0] + ".py"])
-                        exit()
+                            if os.path.exists('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python312-32/python.exe'):
+                                path_to_python = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python312-32/python.exe')
+                            else:
+                                path_to_python = os.path.expanduser('~/.wine/drive_c/users/root/AppData/Local/Programs/Python/Python312-32/python.exe')
+                            
+                            if "Arch" in distro.name() or "Manjaro" in distro.name():
+                                path_to_python = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python312-32/python.exe')
+                            
+                            subprocess.call(["wine", path_to_python, settings[0] + ".py"])
+                            exit()
 
                 # Checking path for pyinstaller.exe
                 if OS == "win32":
