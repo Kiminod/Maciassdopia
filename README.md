@@ -4,10 +4,6 @@ Discord backdoor creator
 This is our new project named Maciassdopia >:)
 
 ## In first case you need to run right file
-Windows:
-
-```setup.ps1```
-
 Linux:
 
 ```chmod +x ./setup.sh```
@@ -21,11 +17,13 @@ I recommend using python virtual enviromend. You can create your own by running 
 
 Then you need to active your venv:
 
-```.\.venv\Scripts\Activate.ps1```
+```.\.venv\Scripts\activate```
 
 After that type (for installing all dependencies):
 
-```py -m pip install -r requrements.txt```
+```py -m pip install -r .\requirements.txt```
+
+```py -m pip install -r .\libraries\c2_requirements.txt```
 
 Now project is ready for the build.
 
@@ -44,7 +42,9 @@ Then you need to active your venv:
 
 After that type (for installing all dependencies):
 
-```python -m pip install -r requrements.txt```
+```python -m pip install -r ./requrements.txt```
+
+```python -m pip install -r ./libraries/c2_requirements.txt```
 
 Now project is ready for the build.
 
@@ -56,6 +56,9 @@ If u want to build the project, just type:
 Or for linux:
 
 ```sudo python ./builder.py```
+
+## History
+The project is being developed to expand and understand the operation of the popular repository [dystopia-c2](https://github.com/3ct0s/dystopia-c2/tree/main). If the creator of the original project asks to join it to the main part, I will include my part to the whole.
 
 ## Disclaimer
 This github repository is made for educational purposes only. The developer is not responsible for any misuse of this software. **Do not use this software for illegal purposes.**

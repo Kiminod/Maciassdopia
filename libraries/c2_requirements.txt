@@ -1,6 +1,9 @@
 discord
 discord_webhook
 pyautogui
+sounddevice
+scipy
+psutil
 opencv-python
 pillow
 keyboard

