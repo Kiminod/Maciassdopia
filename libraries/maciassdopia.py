@@ -112,7 +112,7 @@ def createConfig():
             return False
 
 
-def id():
+def id() -> str:
     path = fr"C:\Users\{getUsername()}\.config\ID"
     
     def createID(file):
@@ -120,7 +120,7 @@ def id():
         if ID == "":
             ID = random.randint(1, 10000)
             file.write(str(ID))
-        return ID
+        return str(ID)
     try:    
         with open(path, "r+") as IDfile:
             return createID(IDfile)
