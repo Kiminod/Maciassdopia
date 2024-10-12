@@ -3,6 +3,8 @@ Discord backdoor creator
 
 This is our new project named Maciassdopia >:)
 
+## Python version used to test this project: `3.12.6`
+
 ## In first case you need to run right file
 Linux:
 

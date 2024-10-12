@@ -3,10 +3,11 @@ import os
 import sys
 import discord
 from discord.ext import commands
+from code.discord.bot import BOT
 from libraries import maciassdopia
 
 class InteractButton(discord.ui.View):
-    def __init__(self, inv:str, id:int, bot:commands.Bot):
+    def __init__(self, inv:str, id:int, bot:BOT):
         super().__init__()
         self.inv = inv
         self.id = id
@@ -15,8 +16,7 @@ class InteractButton(discord.ui.View):
 
     @discord.ui.button(label = "Interact", style = discord.ButtonStyle.blurple, emoji = "🔗")
     async def interactButton(self, interaction:discord.Interaction, button:discord.ui.Button):
-        global CURRENT_AGENT
-        CURRENT_AGENT = self.id
+        self.bot.active_interactions = True
 
         my_embed = discord.Embed(
             title = f"Interacted with agent {self.id}",

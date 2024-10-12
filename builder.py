@@ -290,9 +290,24 @@ try:
                     if "Arch" in distro.name() or "Manjaro" in distro.name():
                         path_to_pyinstaller = os.path.expanduser('~/.wine/drive_c/users/root/Local Settings/Application Data/Programs/Python/Python312-32/Scripts/pyinstaller.exe')
 
-                compile_command = [path_to_pyinstaller, "--onefile", "--noconsole", "--icon=img/exe_file.ico", settings[0] + ".py"]
+
+                if payload == "discord":
+                    compile_command = [path_to_pyinstaller,
+                                    "--onefile",
+                                    "--noconsole", 
+                                    "--icon=img/exe_file.ico",
+                                    "--add-data=code/discord/cogs;code/discord/cogs",
+                                    "--add-data=libraries;libraries",
+                                    #"--hidden-import=keyboard",
+                                    settings[0] + ".py"]
+                else:
+                    compile_command = [path_to_pyinstaller,
+                                    "--onefile",
+                                    "--noconsole", 
+                                    "--icon=img/exe_file.ico",
+                                    settings[0] + ".py"]
                 
-                # linux
+
                 if OS == "win32":
                     subprocess.call(compile_command)
                 else:

